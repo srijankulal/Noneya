@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Plus, Target, Settings, BarChart3 } from "lucide-react"
-import Link from "next/link"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Plus, Target, Settings, BarChart3 } from "lucide-react";
+import Link from "next/link";
 
 export function QuickActions() {
   return (
@@ -17,22 +17,33 @@ export function QuickActions() {
           </Button>
         </Link>
         <Link href="/alerts">
-          <Button className="w-full justify-start gap-3 bg-transparent" variant="outline">
+          <Button
+            className="w-full justify-start gap-3 bg-transparent"
+            variant="outline"
+          >
             <Target className="w-4 h-4" />
             Manage Alerts
           </Button>
         </Link>
         <Link href="/watchlist">
-          <Button className="w-full justify-start gap-3 bg-transparent" variant="outline">
+          <Button
+            className="w-full justify-start gap-3 bg-transparent"
+            variant="outline"
+          >
             <BarChart3 className="w-4 h-4" />
             Manage Watchlist
           </Button>
         </Link>
-        <Button className="w-full justify-start gap-3 bg-transparent" variant="outline">
-          <Settings className="w-4 h-4" />
-          Settings
-        </Button>
+        <Link href="/settings">
+          <Button
+            className="w-full justify-start gap-3 bg-transparent"
+            variant="outline"
+          >
+            <Settings className="w-4 h-4" />
+            Settings
+          </Button>
+        </Link>
       </CardContent>
     </Card>
-  )
+  );
 }
