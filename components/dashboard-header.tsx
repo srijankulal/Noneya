@@ -14,8 +14,8 @@ export function DashboardHeader() {
               <TrendingUp className="w-6 h-6 text-accent-foreground" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-balance">CryptoAlert</h1>
-              <p className="text-sm text-muted-foreground">Price monitoring dashboard</p>
+              <h1 className="text-xl font-bold text-balance">Noneya</h1>
+              <p className="text-sm text-muted-foreground">Alerts, Fingers you</p>
             </div>
           </Link>
 
