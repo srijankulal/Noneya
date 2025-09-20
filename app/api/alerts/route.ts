@@ -1,41 +1,7 @@
 import { NextResponse } from "next/server"
 
-// Mock alert storage - In production, use a database
-const alerts: Alert[] = [
-  {
-    id: "1",
-    cryptoSymbol: "BTC",
-    cryptoName: "Bitcoin",
-    type: "above",
-    threshold: 45000,
-    isActive: true,
-    createdAt: new Date("2024-01-15").toISOString(),
-    triggeredAt: null,
-    status: "active",
-  },
-  {
-    id: "2",
-    cryptoSymbol: "ETH",
-    cryptoName: "Ethereum",
-    type: "below",
-    threshold: 2500,
-    isActive: true,
-    createdAt: new Date("2024-01-16").toISOString(),
-    triggeredAt: null,
-    status: "active",
-  },
-  {
-    id: "3",
-    cryptoSymbol: "BTC",
-    cryptoName: "Bitcoin",
-    type: "above",
-    threshold: 42000,
-    isActive: false,
-    createdAt: new Date("2024-01-14").toISOString(),
-    triggeredAt: new Date("2024-01-17").toISOString(),
-    status: "triggered",
-  },
-]
+// Start with empty alerts array - data will be managed client-side with localStorage
+let alerts: Alert[] = []
 
 export interface Alert {
   id: string

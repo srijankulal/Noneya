@@ -1,44 +1,100 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Search, Plus, Star, TrendingUp, TrendingDown } from "lucide-react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Search,
+  Plus,
+  Star,
+  TrendingUp,
+  TrendingDown,
+  Loader2,
+} from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
-// Mock cryptocurrency data
-const availableCryptos = [
-  { symbol: "BTC", name: "Bitcoin", price: 43250.0, change: 2.45, marketCap: "845B", isWatched: true },
-  { symbol: "ETH", name: "Ethereum", price: 2680.5, change: -1.23, marketCap: "322B", isWatched: true },
-  { symbol: "BNB", name: "BNB", price: 315.8, change: 1.87, marketCap: "47B", isWatched: false },
-  { symbol: "SOL", name: "Solana", price: 98.75, change: 5.67, marketCap: "43B", isWatched: true },
-  { symbol: "XRP", name: "XRP", price: 0.615, change: -2.14, marketCap: "33B", isWatched: false },
-  { symbol: "ADA", name: "Cardano", price: 0.485, change: -0.89, marketCap: "17B", isWatched: true },
-  { symbol: "AVAX", name: "Avalanche", price: 37.2, change: 3.45, marketCap: "14B", isWatched: false },
-  { symbol: "DOT", name: "Polkadot", price: 7.85, change: 1.23, marketCap: "10B", isWatched: false },
-  { symbol: "LINK", name: "Chainlink", price: 15.4, change: 2.67, marketCap: "9B", isWatched: false },
-  { symbol: "MATIC", name: "Polygon", price: 0.89, change: -1.45, marketCap: "8B", isWatched: false },
-]
+// Define the structure for our crypto data
+interface CryptoData {
+  id: string;
+  symbol: string;
+  name: string;
+  price: number;
+  change: number;
+  marketCap: number;
+}
+
+// Initial watchlist (using coin IDs from CoinGecko)
+const initialWatchlist = ["bitcoin", "ethereum", "solana", "cardano"];
 
 export function CryptoSelector() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [watchedCryptos, setWatchedCryptos] = useState(availableCryptos.filter((crypto) => crypto.isWatched))
+  const [searchTerm, setSearchTerm] = useState("");
+  const [allCryptos, setAllCryptos] = useState<CryptoData[]>([]);
+  const [watchedCryptoIds, setWatchedCryptoIds] =
+    useState<string[]>(initialWatchlist);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const filteredCryptos = availableCryptos.filter(
+  useEffect(() => {
+    const fetchCryptos = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch(
+          "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false"
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch data from CoinGecko API");
+        }
+        const data = await response.json();
+        const formattedData: CryptoData[] = data.map((coin: any) => ({
+          id: coin.id,
+          symbol: coin.symbol.toUpperCase(),
+          name: coin.name,
+          price: coin.current_price,
+          change: coin.price_change_percentage_24h,
+          marketCap: coin.market_cap,
+        }));
+        setAllCryptos(formattedData);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "An unknown error occurred"
+        );
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCryptos();
+  }, []);
+
+  const watchedCryptos = allCryptos.filter((crypto) =>
+    watchedCryptoIds.includes(crypto.id)
+  );
+
+  const filteredCryptos = allCryptos.filter(
     (crypto) =>
       crypto.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      crypto.symbol.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+      crypto.symbol.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const toggleWatch = (symbol: string) => {
-    const crypto = availableCryptos.find((c) => c.symbol === symbol)
-    if (crypto) {
-      crypto.isWatched = !crypto.isWatched
-      setWatchedCryptos(availableCryptos.filter((c) => c.isWatched))
-    }
-  }
+  const toggleWatch = (cryptoId: string) => {
+    setWatchedCryptoIds((prev) =>
+      prev.includes(cryptoId)
+        ? prev.filter((id) => id !== cryptoId)
+        : [...prev, cryptoId]
+    );
+  };
+
+  const isWatched = (cryptoId: string) => watchedCryptoIds.includes(cryptoId);
 
   return (
     <div className="space-y-6">
@@ -51,48 +107,70 @@ export function CryptoSelector() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {watchedCryptos.map((crypto) => (
-              <div key={crypto.symbol} className="p-4 border rounded-lg bg-muted/30">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold">{crypto.symbol}</span>
-                    <Star className="w-4 h-4 fill-accent text-accent" />
+          {isLoading ? (
+            <div className="flex items-center justify-center p-8">
+              <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+              <span className="ml-2">Loading Watchlist...</span>
+            </div>
+          ) : error ? (
+            <div className="text-destructive text-center p-4">{error}</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {watchedCryptos.map((crypto) => (
+                <div
+                  key={crypto.id}
+                  className="p-4 border rounded-lg bg-muted/30"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold">{crypto.symbol}</span>
+                      <Star className="w-4 h-4 fill-accent text-accent" />
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => toggleWatch(crypto.id)}
+                      className="text-muted-foreground hover:text-foreground"
+                    >
+                      Remove
+                    </Button>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => toggleWatch(crypto.symbol)}
-                    className="text-muted-foreground hover:text-foreground"
-                  >
-                    Remove
-                  </Button>
-                </div>
-                <p className="text-sm text-muted-foreground mb-2">{crypto.name}</p>
-                <div className="space-y-1">
-                  <div className="text-lg font-bold font-mono">${crypto.price.toLocaleString()}</div>
-                  <div className="flex items-center gap-2">
-                    {crypto.change > 0 ? (
-                      <TrendingUp className="w-3 h-3 text-success" />
-                    ) : (
-                      <TrendingDown className="w-3 h-3 text-destructive" />
-                    )}
-                    <span className={`text-xs ${crypto.change > 0 ? "text-success" : "text-destructive"}`}>
-                      {crypto.change > 0 ? "+" : ""}
-                      {crypto.change}%
-                    </span>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    {crypto.name}
+                  </p>
+                  <div className="space-y-1">
+                    <div className="text-lg font-bold font-mono">
+                      ${crypto.price.toLocaleString()}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {crypto.change > 0 ? (
+                        <TrendingUp className="w-3 h-3 text-success" />
+                      ) : (
+                        <TrendingDown className="w-3 h-3 text-destructive" />
+                      )}
+                      <span
+                        className={`text-xs ${
+                          crypto.change > 0
+                            ? "text-success"
+                            : "text-destructive"
+                        }`}
+                      >
+                        {crypto.change > 0 ? "+" : ""}
+                        {crypto.change?.toFixed(2)}%
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
 
       {/* Add New Cryptocurrency */}
       <Dialog>
         <DialogTrigger asChild>
-          <Button className="w-full gap-2">
+          <Button className="w-full gap-2" disabled={isLoading || !!error}>
             <Plus className="w-4 h-4" />
             Add Cryptocurrency to Watchlist
           </Button>
@@ -116,56 +194,79 @@ export function CryptoSelector() {
 
             {/* Crypto List */}
             <div className="flex-1 overflow-y-auto space-y-2">
-              {filteredCryptos.map((crypto) => (
-                <div
-                  key={crypto.symbol}
-                  className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold">{crypto.symbol}</span>
-                        {crypto.isWatched && <Star className="w-4 h-4 fill-accent text-accent" />}
-                      </div>
-                      <p className="text-sm text-muted-foreground">{crypto.name}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <div className="text-right">
-                      <div className="font-mono font-medium">${crypto.price.toLocaleString()}</div>
-                      <div className="flex items-center gap-1">
-                        {crypto.change > 0 ? (
-                          <TrendingUp className="w-3 h-3 text-success" />
-                        ) : (
-                          <TrendingDown className="w-3 h-3 text-destructive" />
-                        )}
-                        <span className={`text-xs ${crypto.change > 0 ? "text-success" : "text-destructive"}`}>
-                          {crypto.change > 0 ? "+" : ""}
-                          {crypto.change}%
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="text-right">
-                      <div className="text-sm text-muted-foreground">Market Cap</div>
-                      <div className="text-sm font-medium">${crypto.marketCap}</div>
-                    </div>
-
-                    <Button
-                      variant={crypto.isWatched ? "outline" : "default"}
-                      size="sm"
-                      onClick={() => toggleWatch(crypto.symbol)}
-                    >
-                      {crypto.isWatched ? "Remove" : "Add"}
-                    </Button>
-                  </div>
+              {isLoading ? (
+                <div className="flex items-center justify-center p-8">
+                  <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                  <span className="ml-2">Loading Coins...</span>
                 </div>
-              ))}
+              ) : (
+                filteredCryptos.map((crypto) => (
+                  <div
+                    key={crypto.id}
+                    className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold">{crypto.symbol}</span>
+                          {isWatched(crypto.id) && (
+                            <Star className="w-4 h-4 fill-accent text-accent" />
+                          )}
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {crypto.name}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <div className="font-mono font-medium">
+                          ${crypto.price.toLocaleString()}
+                        </div>
+                        <div className="flex items-center justify-end gap-1">
+                          {crypto.change > 0 ? (
+                            <TrendingUp className="w-3 h-3 text-success" />
+                          ) : (
+                            <TrendingDown className="w-3 h-3 text-destructive" />
+                          )}
+                          <span
+                            className={`text-xs ${
+                              crypto.change > 0
+                                ? "text-success"
+                                : "text-destructive"
+                            }`}
+                          >
+                            {crypto.change > 0 ? "+" : ""}
+                            {crypto.change?.toFixed(2)}%
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="text-right hidden sm:block">
+                        <div className="text-sm text-muted-foreground">
+                          Market Cap
+                        </div>
+                        <div className="text-sm font-medium">
+                          ${crypto.marketCap.toLocaleString()}
+                        </div>
+                      </div>
+
+                      <Button
+                        variant={isWatched(crypto.id) ? "outline" : "default"}
+                        size="sm"
+                        onClick={() => toggleWatch(crypto.id)}
+                      >
+                        {isWatched(crypto.id) ? "Remove" : "Add"}
+                      </Button>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

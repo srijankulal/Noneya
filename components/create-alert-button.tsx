@@ -20,6 +20,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useAlerts } from "@/hooks/use-alerts";
+import { useNotifications } from "@/hooks/use-notifications";
 import { Plus } from "lucide-react";
 
 interface CryptoOption {
@@ -42,6 +43,14 @@ export function CreateAlertButton() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { createAlert } = useAlerts();
+  const { requestPermission, permission } = useNotifications();
+
+  // Request notification permission when component mounts
+  useEffect(() => {
+    if (permission === 'default') {
+      requestPermission();
+    }
+  }, [permission, requestPermission]);
 
   useEffect(() => {
     async function fetchCryptos() {
