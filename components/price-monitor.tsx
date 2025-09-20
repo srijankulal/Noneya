@@ -1,37 +1,38 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { useCryptoPrices } from "@/hooks/use-crypto-prices"
-import { RefreshCw, Wifi, WifiOff } from "lucide-react"
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useCryptoPrices } from "@/hooks/use-crypto-prices";
+import { RefreshCw, Wifi, WifiOff } from "lucide-react";
 
 interface PriceMonitorProps {
-  watchedSymbols: string[]
+  watchedSymbols: string[];
 }
 
 export function PriceMonitor({ watchedSymbols }: PriceMonitorProps) {
-  const [isOnline, setIsOnline] = useState(true)
-  const { prices, isLoading, isError, refreshPrices, lastUpdated } = useCryptoPrices(watchedSymbols, 30000)
+  const [isOnline, setIsOnline] = useState(true);
+  const { prices, isLoading, isError, refreshPrices, lastUpdated } =
+    useCryptoPrices(watchedSymbols, 30000);
 
   useEffect(() => {
-    const handleOnline = () => setIsOnline(true)
-    const handleOffline = () => setIsOnline(false)
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
 
-    window.addEventListener("online", handleOnline)
-    window.addEventListener("offline", handleOffline)
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
 
     return () => {
-      window.removeEventListener("online", handleOnline)
-      window.removeEventListener("offline", handleOffline)
-    }
-  }, [])
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
 
   const formatLastUpdated = (timestamp: string) => {
-    const date = new Date(timestamp)
-    return date.toLocaleTimeString()
-  }
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString();
+  };
 
   return (
     <Card>
@@ -39,14 +40,28 @@ export function PriceMonitor({ watchedSymbols }: PriceMonitorProps) {
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             Price Monitor
-            {isOnline ? <Wifi className="w-4 h-4 text-success" /> : <WifiOff className="w-4 h-4 text-destructive" />}
+            {isOnline ? (
+              <Wifi className="w-4 h-4 text-success" />
+            ) : (
+              <WifiOff className="w-4 h-4 text-destructive" />
+            )}
           </CardTitle>
           <div className="flex items-center gap-2">
             {lastUpdated && (
-              <span className="text-xs text-muted-foreground">Updated: {formatLastUpdated(lastUpdated)}</span>
+              <span className="text-xs text-muted-foreground">
+                Updated: {formatLastUpdated(lastUpdated)}
+              </span>
             )}
-            <Button variant="ghost" size="icon" onClick={refreshPrices} disabled={isLoading} className="w-8 h-8">
-              <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={refreshPrices}
+              disabled={isLoading}
+              className="w-8 h-8"
+            >
+              <RefreshCw
+                className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`}
+              />
             </Button>
           </div>
         </div>
@@ -55,7 +70,9 @@ export function PriceMonitor({ watchedSymbols }: PriceMonitorProps) {
         {isError && (
           <div className="text-center py-4">
             <Badge variant="destructive">Failed to load prices</Badge>
-            <p className="text-sm text-muted-foreground mt-2">Check your connection and try again</p>
+            <p className="text-sm text-muted-foreground mt-2">
+              Check your connection and try again
+            </p>
           </div>
         )}
 
@@ -71,11 +88,14 @@ export function PriceMonitor({ watchedSymbols }: PriceMonitorProps) {
         {!isLoading && !isError && (
           <div className="space-y-3">
             {watchedSymbols.map((symbol) => {
-              const priceData = prices[symbol]
-              if (!priceData) return null
+              const priceData = prices[symbol];
+              if (!priceData) return null;
 
               return (
-                <div key={symbol} className="flex items-center justify-between p-3 border rounded-lg">
+                <div
+                  key={symbol}
+                  className="flex items-center justify-between p-3 border rounded-lg"
+                >
                   <div>
                     <span className="font-bold">{symbol}</span>
                     <div className="text-sm text-muted-foreground">
@@ -83,14 +103,22 @@ export function PriceMonitor({ watchedSymbols }: PriceMonitorProps) {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-mono font-bold">${priceData.price.toLocaleString()}</div>
-                    <div className={`text-sm ${priceData.change > 0 ? "text-success" : "text-destructive"}`}>
+                    <div className="font-mono font-bold">
+                      ${priceData.price.toLocaleString()}
+                    </div>
+                    <div
+                      className={`text-sm ${
+                        priceData.change > 0
+                          ? "text-success"
+                          : "text-destructive"
+                      }`}
+                    >
                       {priceData.change > 0 ? "+" : ""}
                       {priceData.change.toFixed(2)}%
                     </div>
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
         )}
@@ -103,5 +131,5 @@ export function PriceMonitor({ watchedSymbols }: PriceMonitorProps) {
         )}
       </CardContent>
     </Card>
-  )
+  );
 }
