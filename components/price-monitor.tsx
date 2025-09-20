@@ -86,7 +86,7 @@ export function PriceMonitor({ watchedSymbols }: PriceMonitorProps) {
                     <div className="font-mono font-bold">${priceData.price.toLocaleString()}</div>
                     <div className={`text-sm ${priceData.change > 0 ? "text-success" : "text-destructive"}`}>
                       {priceData.change > 0 ? "+" : ""}
-                      {priceData.change}%
+                      {priceData.change.toFixed(2)}%
                     </div>
                   </div>
                 </div>

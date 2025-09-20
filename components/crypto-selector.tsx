@@ -156,7 +156,7 @@ export function CryptoSelector() {
                         }`}
                       >
                         {crypto.change > 0 ? "+" : ""}
-                        {crypto.change?.toFixed(2)}%
+                        {(crypto.change || 0).toFixed(2)}%
                       </span>
                     </div>
                   </div>
@@ -238,7 +238,7 @@ export function CryptoSelector() {
                             }`}
                           >
                             {crypto.change > 0 ? "+" : ""}
-                            {crypto.change?.toFixed(2)}%
+                            {(crypto.change || 0).toFixed(2)}%
                           </span>
                         </div>
                       </div>

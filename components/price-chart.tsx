@@ -77,7 +77,7 @@ export function PriceChart() {
                   }`}
                 >
                   {currentPrice.change > 0 ? "+" : ""}
-                  {currentPrice.change}%
+                  {currentPrice.change.toFixed(2)}%
                 </span>
               </div>
             )}

@@ -16,7 +16,7 @@ export function DashboardHeader() {
             <div>
               <h1 className="text-xl font-bold text-balance">Noneya</h1>
               <p className="text-sm text-muted-foreground">
-                Curated Crypto Content
+                Stay Ahead. Alerted. Invested
               </p>
             </div>
           </Link>
@@ -36,15 +36,17 @@ export function DashboardHeader() {
 
           {/* Actions */}
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell className="w-5 h-5" />
-              <Badge
-                variant="destructive"
-                className="absolute -top-1 -right-1 w-5 h-5 p-0 flex items-center justify-center text-xs"
-              >
-                3
-              </Badge>
-            </Button>
+            <Link href="/alerts">
+              <Button variant="ghost" size="icon" className="relative">
+                <Bell className="w-5 h-5" />
+                <Badge
+                  variant="destructive"
+                  className="absolute -top-1 -right-1 w-5 h-5 p-0 flex items-center justify-center text-xs"
+                >
+                  3
+                </Badge>
+              </Button>
+            </Link>
             <Link href="/settings">
               <Button variant="ghost" size="icon">
                 <Settings className="w-5 h-5" />
