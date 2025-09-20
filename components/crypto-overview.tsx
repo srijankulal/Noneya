@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { TrendingUp, TrendingDown, Target } from "lucide-react"
-import { useCryptoPrices } from "@/hooks/use-crypto-prices"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { TrendingUp, TrendingDown, Target } from "lucide-react";
+import { useCryptoPrices } from "@/hooks/use-crypto-prices";
 
-const watchedSymbols = ["BTC", "ETH", "SOL", "ADA"]
+const watchedSymbols = ["BTC", "ETH", "SOL", "ADA"];
 
 // Mock alert counts for each crypto
 const alertCounts = {
@@ -13,10 +13,10 @@ const alertCounts = {
   ETH: 1,
   SOL: 0,
   ADA: 1,
-}
+};
 
 export function CryptoOverview() {
-  const { prices, isLoading, isError } = useCryptoPrices(watchedSymbols, 30000)
+  const { prices, isLoading, isError } = useCryptoPrices(watchedSymbols, 30000);
 
   if (isLoading) {
     return (
@@ -34,7 +34,7 @@ export function CryptoOverview() {
           </Card>
         ))}
       </div>
-    )
+    );
   }
 
   if (isError) {
@@ -42,16 +42,16 @@ export function CryptoOverview() {
       <div className="text-center py-8">
         <Badge variant="destructive">Failed to load cryptocurrency data</Badge>
       </div>
-    )
+    );
   }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {watchedSymbols.map((symbol) => {
-        const priceData = prices[symbol]
-        const alerts = alertCounts[symbol as keyof typeof alertCounts] || 0
+        const priceData = prices[symbol];
+        const alerts = alertCounts[symbol as keyof typeof alertCounts] || 0;
 
-        if (!priceData) return null
+        if (!priceData) return null;
 
         return (
           <Card key={symbol} className="relative overflow-hidden">
@@ -63,12 +63,12 @@ export function CryptoOverview() {
                     {symbol === "BTC"
                       ? "Bitcoin"
                       : symbol === "ETH"
-                        ? "Ethereum"
-                        : symbol === "SOL"
-                          ? "Solana"
-                          : symbol === "ADA"
-                            ? "Cardano"
-                            : symbol}
+                      ? "Ethereum"
+                      : symbol === "SOL"
+                      ? "Solana"
+                      : symbol === "ADA"
+                      ? "Cardano"
+                      : symbol}
                   </p>
                 </div>
                 {alerts > 0 && (
@@ -81,23 +81,29 @@ export function CryptoOverview() {
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                <div className="text-2xl font-bold font-mono">${priceData.price.toLocaleString()}</div>
+                <div className="text-2xl font-bold font-mono">
+                  ${priceData.price.toLocaleString()}
+                </div>
                 <div className="flex items-center gap-2">
                   {priceData.change > 0 ? (
                     <TrendingUp className="w-4 h-4 text-success" />
                   ) : (
                     <TrendingDown className="w-4 h-4 text-destructive" />
                   )}
-                  <span className={`text-sm font-medium ${priceData.change > 0 ? "text-success" : "text-destructive"}`}>
+                  <span
+                    className={`text-sm font-medium ${
+                      priceData.change > 0 ? "text-success" : "text-destructive"
+                    }`}
+                  >
                     {priceData.change > 0 ? "+" : ""}
-                    {priceData.change}%
+                    {priceData.change.toFixed(2)}%
                   </span>
                 </div>
               </div>
             </CardContent>
           </Card>
-        )
+        );
       })}
     </div>
-  )
+  );
 }
