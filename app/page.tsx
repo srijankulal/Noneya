@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { DashboardHeader } from "@/components/dashboard-header"
-import { CryptoOverview } from "@/components/crypto-overview"
-import { ActiveAlerts } from "@/components/active-alerts"
-import { PriceChart } from "@/components/price-chart"
-import { QuickActions } from "@/components/quick-actions"
-import { PriceMonitor } from "@/components/price-monitor"
-import { CryptoNews } from "@/components/CryptoNews"
-import { useAlertMonitoring } from "@/hooks/use-alert-monitoring"
+import { DashboardHeader } from "@/components/dashboard-header";
+import { CryptoOverview } from "@/components/crypto-overview";
+import { ActiveAlerts } from "@/components/active-alerts";
+import { PriceChart } from "@/components/price-chart";
+import { QuickActions } from "@/components/quick-actions";
+import { PriceMonitor } from "@/components/price-monitor";
+import { CryptoNews } from "@/components/CryptoNews";
+import { useAlertMonitoring } from "@/hooks/use-alert-monitoring";
 
 export default function Dashboard() {
-  const watchedSymbols = ["BTC", "ETH", "SOL", "ADA"]
+  const watchedSymbols = ["BTC", "ETH", "SOL", "ADA"];
 
-  useAlertMonitoring()
+  useAlertMonitoring();
 
   return (
     <div className="min-h-screen bg-background">
@@ -39,5 +39,5 @@ export default function Dashboard() {
         </div>
       </main>
     </div>
-  )
+  );
 }
