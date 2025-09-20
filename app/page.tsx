@@ -6,6 +6,7 @@ import { ActiveAlerts } from "@/components/active-alerts"
 import { PriceChart } from "@/components/price-chart"
 import { QuickActions } from "@/components/quick-actions"
 import { PriceMonitor } from "@/components/price-monitor"
+import { CryptoNews } from "@/components/CryptoNews"
 import { useAlertMonitoring } from "@/hooks/use-alert-monitoring"
 
 export default function Dashboard() {
@@ -24,8 +25,9 @@ export default function Dashboard() {
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Price Chart - Takes up 2 columns on large screens */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 space-y-6">
             <PriceChart />
+            <CryptoNews />
           </div>
 
           {/* Sidebar */}
