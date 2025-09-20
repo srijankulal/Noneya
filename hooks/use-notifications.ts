@@ -12,6 +12,7 @@ export interface NotificationPreferences {
 
 export function useNotifications() {
   const [permission, setPermission] = useState<NotificationPermission>("default")
+  const [pushSubscription, setPushSubscription] = useState<PushSubscription | null>(null)
   const [preferences, setPreferences] = useState<NotificationPreferences>({
     browserNotifications: true,
     soundEnabled: true,
@@ -30,6 +31,15 @@ export function useNotifications() {
     const savedPreferences = localStorage.getItem("notification-preferences")
     if (savedPreferences) {
       setPreferences(JSON.parse(savedPreferences))
+    }
+
+    // Check for existing push subscription
+    if ("serviceWorker" in navigator && "PushManager" in window) {
+      navigator.serviceWorker.ready.then((registration) => {
+        registration.pushManager.getSubscription().then((subscription) => {
+          setPushSubscription(subscription)
+        })
+      })
     }
   }, [])
 
@@ -133,6 +143,7 @@ export function useNotifications() {
   return {
     permission,
     preferences,
+    pushSubscription,
     requestPermission,
     sendBrowserNotification,
     sendAlertNotification,

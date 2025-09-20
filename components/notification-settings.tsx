@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useNotifications } from "@/hooks/use-notifications"
 import { Bell, Volume2, Mail, Smartphone, CheckCircle, XCircle } from "lucide-react"
+import SubscribeButton from "./SubscribeButton"
 
 export function NotificationSettings() {
   const { permission, preferences, requestPermission, updatePreferences, playNotificationSound } = useNotifications()
@@ -129,19 +130,29 @@ export function NotificationSettings() {
         </div>
 
         {/* Push Notifications */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Smartphone className="w-4 h-4" />
-            <div>
-              <span className="font-medium">Push Notifications</span>
-              <p className="text-sm text-muted-foreground">Mobile push notifications (Coming Soon)</p>
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Smartphone className="w-4 h-4" />
+              <div>
+                <span className="font-medium">Push Notifications</span>
+                <p className="text-sm text-muted-foreground">Receive push notifications even when the app is closed</p>
+              </div>
             </div>
+            <Switch
+              checked={preferences.pushNotifications}
+              onCheckedChange={(checked) => updatePreferences({ pushNotifications: checked })}
+            />
           </div>
-          <Switch
-            checked={preferences.pushNotifications}
-            onCheckedChange={(checked) => updatePreferences({ pushNotifications: checked })}
-            disabled
-          />
+          
+          {preferences.pushNotifications && (
+            <div className="p-3 bg-muted/50 rounded-lg">
+              <p className="text-sm text-muted-foreground mb-3">
+                Enable push notifications to receive crypto alerts even when your browser is closed.
+              </p>
+              <SubscribeButton />
+            </div>
+          )}
         </div>
 
         {/* Test Notification */}
