@@ -47,7 +47,7 @@ export function CreateAlertButton() {
 
   // Request notification permission when component mounts
   useEffect(() => {
-    if (permission === 'default') {
+    if (permission === "default") {
       requestPermission();
     }
   }, [permission, requestPermission]);

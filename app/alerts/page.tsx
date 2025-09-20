@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { DashboardHeader } from "@/components/dashboard-header";
 import { AlertsList } from "@/components/alerts-list";
