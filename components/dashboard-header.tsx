@@ -2,6 +2,8 @@ import { Bell, Settings, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import none from"@/public/none.png";
+import Image from "next/image";
 
 export function DashboardHeader() {
   return (
@@ -9,18 +11,19 @@ export function DashboardHeader() {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo and Title */}
-          <Link href="/" className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 bg-accent rounded-lg">
-              <TrendingUp className="w-6 h-6 text-accent-foreground" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-balance">Noneya</h1>
-              <p className="text-sm text-muted-foreground">
-                Curated Crypto Content
-              </p>
-            </div>
-          </Link>
+    <Link href="/" className="flex items-center gap-3">
+      <div className="flex items-center justify-center w-10 h-10 bg-accent rounded-lg">
+        <Image src={none} alt="Noneya Logo" width={24} height={24} className="text-accent-foreground" />
+      </div>
+      <div>
+        <h1 className="text-xl font-bold text-balance">Noneya</h1>
+        <p className="text-sm text-muted-foreground">
+          Curated Crypto Content
+        </p>
+      </div>
+    </Link>
 
+          
           {/* Navigation */}
           <nav className="hidden md:flex items-center gap-4">
             <Link href="/">

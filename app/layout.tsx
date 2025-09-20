@@ -8,7 +8,15 @@ import "./globals.css"
 
 export const metadata: Metadata = {
   title: "Noneya - Cryptocurrency Price Monitoring Dashboard",
-  description: "Monitor cryptocurrency prices and get alerts when thresholds are crossed",
+  description: "Stay ahead. Alerted. Invested.",
+  icons: {
+    icon: [
+      { url: "/none.ico", sizes: "any" },
+      { url: "/none.png", type: "image/png" },
+    ],
+    shortcut: "/none.ico",
+    apple: "/none.png",
+  },
 }
 
 export default function RootLayout({
