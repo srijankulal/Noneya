@@ -2,15 +2,13 @@ import type React from "react"
 import type { Metadata } from "next"
 import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
-import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "@/components/ui/toaster"
 import { Suspense } from "react"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "CryptoAlert - Price Monitoring Dashboard",
+  title: "Noneya - Cryptocurrency Price Monitoring Dashboard",
   description: "Monitor cryptocurrency prices and get alerts when thresholds are crossed",
-  generator: "v0.app",
 }
 
 export default function RootLayout({
@@ -25,7 +23,6 @@ export default function RootLayout({
           {children}
           <Toaster />
         </Suspense>
-        <Analytics />
       </body>
     </html>
   )
