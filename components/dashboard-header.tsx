@@ -1,7 +1,7 @@
-import { Bell, Settings, TrendingUp } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
+import { Bell, Settings, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 export function DashboardHeader() {
   return (
@@ -15,7 +15,9 @@ export function DashboardHeader() {
             </div>
             <div>
               <h1 className="text-xl font-bold text-balance">Noneya</h1>
-              <p className="text-sm text-muted-foreground">Alerts, Fingers you</p>
+              <p className="text-sm text-muted-foreground">
+                Curated Crypto Content
+              </p>
             </div>
           </Link>
 
@@ -52,5 +54,5 @@ export function DashboardHeader() {
         </div>
       </div>
     </header>
-  )
+  );
 }
